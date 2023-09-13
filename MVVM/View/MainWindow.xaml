@@ -5,39 +5,157 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewmodel="clr-namespace:Chat19Aug.MVVM.ViewModel"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="900">
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="#606060"
+        ResizeMode="CanResizeWithGrip"
+        Height="450" Width="900">
 
+    <Window.Resources>
+        <Style TargetType="{x:Type TextBox}">
+            <Setter Property="Margin" Value="3" />
+            <Setter Property="TextAlignment" Value="Center" />
+        </Style>
 
+        <Style TargetType="{x:Type Button }">
+            <Setter Property="Margin" Value="3" />            
+        </Style>
 
+        <Style TargetType="{x:Type TextBlock}">
+            <Setter Property="Margin" Value="3" />
+            <Setter Property="TextAlignment" Value="Center" />
+        </Style>
+    </Window.Resources>
 
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="190"/>
-            <ColumnDefinition/>
-        </Grid.ColumnDefinitions>
+    <Border BorderBrush="Black" BorderThickness="2" Margin="3">
+        <Grid Margin="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="190"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
 
-        <DockPanel>
-            <TextBox Height="25"
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Border Background="#242424"
+                MouseDown="Border_MouseDown"
+                Grid.ColumnSpan="2"
+                Grid.Row="0"
+                Margin="0"
+                Padding="0">
+                <Grid HorizontalAlignment="Stretch">
+                    <Label Content="Мой чат"
+                    Foreground="Gray"
+                    FontWeight="Bold"
+                    FontFamily="Arial Black"/>
+                    <StackPanel HorizontalAlignment="Right"
+                            Orientation="Horizontal">
+                        <Button Width="20" Height="20"
+                            Content="-"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Foreground="Gray"
+                            FontWeight="Bold"                            
+                            FontSize="16"
+                            Click="HideButton_Click"
+                            />
+                        <Button Width="20" Height="20"
+                            Content="☐"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Foreground="Gray"
+                            FontWeight="Bold"
+                            Click="WindowStateButton_Click"/>
+                        <Button Width="20" Height="20"
+                            Content="🞮"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Foreground="Gray"
+                            FontWeight="Bold"
+                            Click="CloseButton_Click"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <DockPanel Grid.Row="1">
+                <TextBlock Text="Ваше имя :"
+                       DockPanel.Dock="Top"/>
+                <TextBox Height="25"
                      DockPanel.Dock="Top"
-                     Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}"/>
-            <Button Height="25"
+                     Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}">
+                    <TextBox.InputBindings>
+                        <KeyBinding Command="{Binding Path=ConnectToServerCommand}" Key="Enter" />
+                    </TextBox.InputBindings>
+                </TextBox>
+
+                <TextBlock Text="Адрес сервера :"
+                       DockPanel.Dock="Top"/>
+                <TextBox Height="25"
+                     DockPanel.Dock="Top"
+                     Text="{Binding IP, UpdateSourceTrigger=PropertyChanged}">
+                    <TextBox.InputBindings>
+                        <KeyBinding Command="{Binding Path=ConnectToServerCommand}" Key="Enter" />
+                    </TextBox.InputBindings>
+                </TextBox>
+                <TextBlock Text="Порт :"
+                       DockPanel.Dock="Top"/>
+                <TextBox Height="25"
+                     DockPanel.Dock="Top"
+                     Text="{Binding Port, UpdateSourceTrigger=PropertyChanged}">
+                    <TextBox.InputBindings>
+                        <KeyBinding Command="{Binding Path=ConnectToServerCommand}" Key="Enter" />
+                    </TextBox.InputBindings>
+                </TextBox>
+
+
+
+                <Button Height="25"
                     DockPanel.Dock="Top"
                     Content="Подключиться"
                     Command="{Binding ConnectToServerCommand}"/>
-            <ListView/>
-        </DockPanel>
+                <ListView ItemsSource="{Binding Users}"
+                          Margin="3">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Username}"/>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </DockPanel>
 
-        <StackPanel Grid.Column="1">
-            <ListView Height="380"/>
-            <StackPanel Orientation="Horizontal">
-                <TextBox Height="60"
-                         Width="550"
-                     VerticalContentAlignment="Center"/>
-                <Button Width="160"
-                        Content="Отправить сообщение"/>
-            </StackPanel>
-            
-            
-        </StackPanel>
-    </Grid>
+            <Grid Grid.Column="1"
+                    Grid.Row="1"
+                    >
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition Height="30"/>
+                </Grid.RowDefinitions>
+
+
+                <ListView VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                      ItemsSource="{Binding Messages}"
+                      Margin="3"/>
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="160"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox Height="25"                         
+                         VerticalContentAlignment="Center"
+                         TextAlignment="Left"
+                         Text="{Binding Message, UpdateSourceTrigger=PropertyChanged}">
+                        <TextBox.InputBindings>
+                            <KeyBinding Command="{Binding Path=SendMessageCommand}" Key="Enter" />
+                        </TextBox.InputBindings>
+                    </TextBox>
+                    <Button Grid.Column="1"
+                        Width="160"
+                        Content="Отправить сообщение"
+                        Command="{Binding SendMessageCommand}"/>
+                </Grid>
+            </Grid>
+        </Grid>
+    </Border>
 </Window>
